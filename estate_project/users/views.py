@@ -58,6 +58,7 @@ def agent_details(request,slug):
     return Response(serializer.errors)
 
 @api_view(['GET','POST',])
+@permission_classes([IsAuthenticated])
 def userProfile(request):
     check = request.user
     user = User.objects.get(slug=check.slug)
@@ -73,6 +74,11 @@ def userProfile(request):
             return Response([serializer.data,serializer2.data])
     return Response(serializer.errors)
 
+# @api_view(["GET", "POST"])
+# @permission_classes([IsAuthenticated,])
+# def userProfile(request):
+#     current_user = User
+
 @api_view(["GET","POST",])
 @permission_classes([IsAuthenticated])
 def agentProfile(request):
@@ -80,7 +86,7 @@ def agentProfile(request):
     user = User.objects.get(slug=check.slug)
     userprofile = AgentProfile.objects.get(slug=check.slug)
     serializer = UsersSerializer(user,many=False)
-    serializer2= UsersSerializer(userprofile,many=False)
+    serializer2= ProfileSerializer(userprofile,many=False) # Prosper changed this from UsersSerializer to ProfileSerializer
     if request.method=="GET":
         return Response([serializer.data,serializer2.data])
     elif request.method=="POST":
